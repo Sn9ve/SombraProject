@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">SombraProject</string>
+    <string name="action_settings">Settings</string>
+    <string name="speech_prompt">Ask something</string>
+    <string name="speech_not_supported">Sorry! Your device doesn\'t support speech input</string>
+    <string name="mic">Mic</string>
+</resources>
