@@ -1,84 +1,64 @@
 package com.project.snave.sombraproject.socket;
 
-import android.os.AsyncTask;
-import android.util.Log;
+import android.widget.Toast;
 
-import java.util.logging.Handler;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Created by Snave on 29/12/2016.
  */
-public class ClientSocket extends AsyncTask<String, String, ClientConnection> {
+public class ClientSocket extends Thread{
+    private String IP;
+    private short PORT;
+    public static Socket socket;
 
-    private static final String COMMAND = "shutdown -s";
-    private ClientConnection tcpClient ;
-    private Handler mHandler;
-    /**
-     * ShutdownAsyncTask constructor with handler passed as argument. The UI is updated via handler.
-     * In doInBackground(...) method, the handler is passed to TCPClient object.
-     * @param mHandler Handler object that is retrieved from MainActivity class and passed to TCPClient
-     *                 class for sending messages and updating UI.
-     */
-    public ClientSocket(Handler mHandler){
-        this.mHandler = mHandler;
+    public Transmit TRANSMISSION_THREAD;
+    public Receive RECEPTION_THREAD;
+    private DataOutputStream out = null;
+    private BufferedReader in = null;
+
+    private static ClientSocket instance = new ClientSocket();
+
+    private ClientSocket() {
+        this.socket = null;
     }
 
-    private static final String TAG = "ShutdownAsyncTask";
-
-    /**
-     * Overriden method from AsyncTask class. There the TCPClient object is created.
-     * @param params From MainActivity class empty string is passed.
-     * @return TCPClient object for closing it in onPostExecute method.
-     */
-    @Override
-    protected ClientConnection doInBackground(String... params) {
-        Log.d(TAG, "In do in background");
-        try{
-            tcpClient = new ClientConnection(mHandler,
-                    COMMAND,
-                    "192.168.1.1",
-                    new ClientConnection.MessageCallback() {
-                        @Override
-                        public void callbackMessageReceiver(String message) {
-                            publishProgress(message);
-                        }
-                    });
-
-        }catch (NullPointerException e){
-            Log.d(TAG, "Caught null pointer exception");
-            e.printStackTrace();
-        }
-        tcpClient.run();
-        return null;
+    public static ClientSocket getInstance() {
+        return instance;
     }
 
-    /**
-     * Overriden method from AsyncTask class. Here we're checking if server answered properly.
-     * @param values If "restart" message came, the client is stopped and computer should be restarted.
-     *               Otherwise "wrong" message is sent and 'Error' message is shown in UI.
-     */
-    @Override
-    protected void onProgressUpdate(String... values) {
-        super.onProgressUpdate(values);
-        Log.d(TAG, "In progress update, values: " + values.toString());
-        if(values[0].equals("shutdown")){
-            tcpClient.sendMessage(COMMAND);
-            tcpClient.stopClient();
-            //mHandler.sendEmptyMessageDelayed(MainActivity.SHUTDOWN, 2000);
-        }else{
-            tcpClient.sendMessage("wrong");
-            //mHandler.sendEmptyMessageDelayed(MainActivity.ERROR, 2000);
-            tcpClient.stopClient();
+    public void run() {
+        try {
+            System.out.println("Demande de connexion");
+            socket = new Socket(IP, PORT);
+            // Si le message s'affiche c'est que je suis connecté
+            System.out.println("Connexion établie avec le serveur");
+
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            /** Thread de transmission des données du joystick **/
+            TRANSMISSION_THREAD = new Transmit(out);
+            TRANSMISSION_THREAD.start();
+            /** Thread de réception des messages reçus du serveur **
+            RECEPTION_THREAD = new Receive(in);
+            RECEPTION_THREAD.start();
+            */
+
+        } catch (UnknownHostException e) {
+            System.err.println("Impossible de se connecter à l'adresse "+socket.getLocalAddress());
+        } catch (IOException e) {
+            System.err.println("Aucun serveur à l'écoute du port "+socket.getLocalPort());
         }
     }
 
-    @Override
-    protected void onPostExecute(ClientConnection result){
-        super.onPostExecute(result);
-        Log.d(TAG, "In on post execute");
-        if(result != null){
-            result.stopClient();
-        }
-        //mHandler.sendEmptyMessageDelayed(MainActivity.SENT, 4000);
+    public void addToSendQueue(byte x, byte y){
+        TRANSMISSION_THREAD.addToSendQueue(x, y);
     }
 }

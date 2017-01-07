@@ -1,5 +1,8 @@
 package com.project.snave.sombraproject;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,12 +12,12 @@ import java.util.regex.Pattern;
  */
 
 public class SpeechProcessing {
-    private static String stop = "(stop|turn off|pause|wait)";
-    private static String analyze = "(watch|look|analyze)";
-    private static String front = "(front|move|go ahead)";
-    private static String back = "(back)";
-    private static String right = "(right)";
-    private static String left = "(left)";
+    private static String stop = "(stop|éteindre|attend)";
+    private static String analyze = "(observe|regarde|analyse)";
+    private static String front = "(devant|avance)";
+    private static String back = "(recule|.*arrière)";
+    private static String right = "(droite|.*tribord)";
+    private static String left = "(gauche|.*bâbord)";
     public static String resultOrder = "";
 
     private static Pattern stopPattern;
@@ -26,7 +29,7 @@ public class SpeechProcessing {
 
     private static Matcher m;
 
-    private static void processing(String resultToMatch){
+    public static void processing(String resultToMatch){
         m = stopPattern.matcher(resultToMatch);
         if(m.matches()){
             resultOrder = "stop";
@@ -56,31 +59,6 @@ public class SpeechProcessing {
         if(m.matches()){
             resultOrder = "left";
             return;
-        }
-    }
-
-    public static void processAction(String voice) {
-        SpeechProcessing.processing(voice);
-        switch (resultOrder){
-            case "stop":
-                //do something in this case, add the function to stop Sombra
-                break;
-            case "analyze":
-                //add the function to start analyze
-                break;
-            case "front":
-                //add the function to move in front
-                break;
-            case "back":
-                //add the function to move backward
-                break;
-            case "right":
-                //add the function to move in right
-                break;
-            case "left":
-                //add the function to move in left
-                break;
-
         }
     }
 
