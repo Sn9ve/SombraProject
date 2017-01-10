@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.project.snave.sombraproject.R;
 import com.project.snave.sombraproject.SpeechProcessing;
-import com.project.snave.sombraproject.socket.ClientSocket;
+import com.project.snave.sombraproject.socket.Connection;
 
 import java.util.List;
 import java.util.Locale;
@@ -85,32 +85,32 @@ public class CommunicationActivity extends Activity {
         switch (SpeechProcessing.resultOrder){
             case "stop":
                 //do something in this case, add the function to stop Sombra
-                ClientSocket.getInstance().addToSendQueue(stop[0], stop[1]);
+                com.project.snave.sombraproject.socket.Connection.getInstance().addToSendQueue(stop[0], stop[1]);
                 Toast.makeText(getBaseContext(), "stop", Toast.LENGTH_LONG).show();
                 break;
             case "analyze":
                 //add the function to start analyze
-                //ClientSocket.getInstance().addToSendQueue(x, y);
+                //Connection.getInstance().addToSendQueue(x, y);
                 Toast.makeText(getBaseContext(), "analyse", Toast.LENGTH_LONG).show();
                 break;
             case "front":
                 //add the function to move in front
-                ClientSocket.getInstance().addToSendQueue(front[0], front[1]);
+                com.project.snave.sombraproject.socket.Connection.getInstance().addToSendQueue(front[0], front[1]);
                 Toast.makeText(getBaseContext(), "front", Toast.LENGTH_LONG).show();
                 break;
             case "back":
                 //add the function to move backward
-                ClientSocket.getInstance().addToSendQueue(back[0], back[1]);
+                com.project.snave.sombraproject.socket.Connection.getInstance().addToSendQueue(back[0], back[1]);
                 Toast.makeText(getBaseContext(), "back", Toast.LENGTH_LONG).show();
                 break;
             case "right":
                 //add the function to move in right
-                ClientSocket.getInstance().addToSendQueue(right[0], right[1]);
+                com.project.snave.sombraproject.socket.Connection.getInstance().addToSendQueue(right[0], right[1]);
                 Toast.makeText(getBaseContext(), "right", Toast.LENGTH_LONG).show();
                 break;
             case "left":
                 //add the function to move in left
-                ClientSocket.getInstance().addToSendQueue(left[0], left[1]);
+                Connection.getInstance().addToSendQueue(left[0], left[1]);
                 Toast.makeText(getBaseContext(), "left", Toast.LENGTH_LONG).show();
                 break;
 

@@ -1,5 +1,10 @@
 package com.project.snave.sombraproject.socket;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,15 +20,21 @@ public class Connection extends Thread{
     private short PORT;
     public static Socket socket;
 
-    public Transmit TRANSMISSION_THREAD;
+    public Transmit TRANSMISSION;
     public Receive RECEPTION_THREAD;
+
     private DataOutputStream out = null;
     private BufferedReader in = null;
+    Handler handler;
+
+    public static final String X = "X";
+    public static final String Y = "Y";
 
     private static Connection instance = new Connection();
 
     private Connection() {
         this.socket = null;
+        this.TRANSMISSION = new Transmit();
         this.IP = "192.168.0.20";
         this.PORT = 23;
     }
@@ -42,12 +53,16 @@ public class Connection extends Thread{
             out = new DataOutputStream(socket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             /** Thread de transmission des données du joystick **/
-            TRANSMISSION_THREAD = new Transmit(out);
-            TRANSMISSION_THREAD.start();
-            /** Thread de réception des messages reçus du serveur **
-            RECEPTION_THREAD = new Receive(in);
-            RECEPTION_THREAD.start();
-            */
+            Looper.prepare();
+                handler = new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        Bundle bundle = msg.getData();
+                        //int action = msg.what;
+                        TRANSMISSION.processQueue(out, bundle.getByte(X), bundle.getByte(Y));
+                    }
+                };
+            Looper.loop();
 
         } catch (UnknownHostException e) {
             System.err.println("Impossible de se connecter à l'adresse "+ socket.getLocalAddress());
@@ -57,6 +72,6 @@ public class Connection extends Thread{
     }
 
     public void addToSendQueue(byte x, byte y){
-        TRANSMISSION_THREAD.addToSendQueue(x, y);
+        TRANSMISSION.addToSendQueue(handler, x, y);
     }
 }
