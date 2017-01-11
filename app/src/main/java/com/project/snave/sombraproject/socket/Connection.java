@@ -45,6 +45,8 @@ public class Connection extends Thread{
 
     public void run() {
         try {
+            Looper.prepare();
+
             System.out.println("Demande de connexion");
             socket = new Socket(IP, PORT);
             // Si le message s'affiche c'est que je suis connecté
@@ -53,21 +55,21 @@ public class Connection extends Thread{
             out = new DataOutputStream(socket.getOutputStream());
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             /** Thread de transmission des données du joystick **/
-            Looper.prepare();
-                handler = new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        Bundle bundle = msg.getData();
-                        //int action = msg.what;
-                        TRANSMISSION.processQueue(out, bundle.getByte(X), bundle.getByte(Y));
-                    }
-                };
+
+            handler = new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    Bundle bundle = msg.getData();
+                    int action = msg.what;
+                    TRANSMISSION.processQueue(out, bundle.getByte(X), bundle.getByte(Y));
+                }
+            };
             Looper.loop();
 
         } catch (UnknownHostException e) {
-            System.err.println("Impossible de se connecter à l'adresse "+ socket.getLocalAddress());
+            System.err.println("Impossible de se connecter à l'adresse " + socket.getLocalAddress());
         } catch (IOException e) {
-            System.err.println("Aucun serveur à l'écoute du port "+socket.getLocalPort());
+            System.err.println("Aucun serveur à l'écoute du port " + socket.getLocalPort());
         }
     }
 

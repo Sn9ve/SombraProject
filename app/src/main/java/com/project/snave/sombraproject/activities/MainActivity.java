@@ -1,5 +1,6 @@
 package com.project.snave.sombraproject.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +10,7 @@ import android.widget.ImageButton;
 import com.project.snave.sombraproject.R;
 import com.project.snave.sombraproject.socket.Connection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private ImageButton btnControl, btnSpeech ;
 
