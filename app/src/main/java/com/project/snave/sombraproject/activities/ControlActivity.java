@@ -38,13 +38,13 @@ public class ControlActivity extends Activity {
                 offset *= 100.0;
                 byte x = (byte) (Math.cos(Math.toRadians(degrees)) * offset);
                 byte y = (byte) (Math.sin(Math.toRadians(degrees)) * offset);
-                System.out.println(x + " --> X  |" + y + " --> Y");
                 Connection.getInstance().addToSendQueue(x, y);
+                //Connection.getInstance().sendData(x, y);
             }
 
             @Override
             public void onUp(){
-                //Connection.getInstance().addToSendQueue((byte) 0, (byte) 0);
+                Connection.getInstance().addToSendQueue((byte) 0, (byte) 0);
             }
         };
     }

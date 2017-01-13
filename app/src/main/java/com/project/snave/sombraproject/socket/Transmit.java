@@ -21,7 +21,7 @@ public class Transmit {
     public void addToSendQueue(Handler handler, byte x, byte y){
         if(handler != null){
             Message msg = handler.obtainMessage();
-            //msg.what = SEND;
+            msg.what = Connection.SEND;
             Bundle bundle = new Bundle();
             bundle.putByte(Connection.X, x);
             bundle.putByte(Connection.Y, y);

@@ -29,6 +29,8 @@ public class Connection extends Thread{
 
     public static final String X = "X";
     public static final String Y = "Y";
+    public static final int SEND = 1;
+
 
     private static Connection instance = new Connection();
 
@@ -75,5 +77,14 @@ public class Connection extends Thread{
 
     public void addToSendQueue(byte x, byte y){
         TRANSMISSION.addToSendQueue(handler, x, y);
+    }
+
+    public void sendData(byte x, byte y){
+        try {
+            out.writeByte(x);
+            out.writeByte(y);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
