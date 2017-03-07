@@ -16,8 +16,9 @@ import java.net.UnknownHostException;
  * Created by Snave on 29/12/2016.
  */
 public class Connection extends Thread{
-    private String IP;
-    private short PORT;
+    public static String IP2;
+    public static String IP;
+    private int PORT;
     public static Socket socket;
 
     public Transmit TRANSMISSION;
@@ -29,6 +30,7 @@ public class Connection extends Thread{
 
     public static final String X = "X";
     public static final String Y = "Y";
+    public static final String HEADER = "HEADER";
     public static final int SEND = 1;
 
 
@@ -37,8 +39,8 @@ public class Connection extends Thread{
     private Connection() {
         this.socket = null;
         this.TRANSMISSION = new Transmit();
-        this.IP = "192.168.0.20";
-        this.PORT = 23;
+        this.IP = "192.168.0.25";
+        this.PORT = 999;
     }
 
     public static Connection getInstance() {
@@ -63,7 +65,7 @@ public class Connection extends Thread{
                 public void handleMessage(Message msg) {
                     Bundle bundle = msg.getData();
                     int action = msg.what;
-                    TRANSMISSION.processQueue(out, bundle.getByte(X), bundle.getByte(Y));
+                    TRANSMISSION.processQueue(out, bundle.getByte(HEADER), bundle.getByte(X), bundle.getByte(Y));
                 }
             };
             Looper.loop();

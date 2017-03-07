@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,10 +31,12 @@ public class Transmit {
         }
     }
 
-    public void processQueue(DataOutputStream out, byte x, byte y){
+    public void processQueue(DataOutputStream out, byte header, byte x, byte y){
         try {
+            out.writeByte(header);
             out.writeByte(x);
             out.writeByte(y);
+            Log.i("IEM : " + header, " ------> S0MBR4 : " + x + " " + y);
         } catch (IOException e) {
             e.printStackTrace();
         }
