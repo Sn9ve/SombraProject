@@ -19,26 +19,14 @@ public class Transmit {
 
     }
 
-    public void addToSendQueue(Handler handler, byte x, byte y){
+    public void addToSendQueue(Handler handler, byte[] buff){
         if(handler != null){
             Message msg = handler.obtainMessage();
             msg.what = Connection.SEND;
             Bundle bundle = new Bundle();
-            bundle.putByte(Connection.X, x);
-            bundle.putByte(Connection.Y, y);
+            bundle.putByteArray(Connection.DATA, buff);
             msg.setData(bundle);
             handler.sendMessage(msg);
-        }
-    }
-
-    public void processQueue(DataOutputStream out, byte header, byte x, byte y){
-        try {
-            out.writeByte(header);
-            out.writeByte(x);
-            out.writeByte(y);
-            Log.i("IEM : " + header, " ------> S0MBR4 : " + x + " " + y);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

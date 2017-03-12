@@ -2,6 +2,7 @@ package com.project.snave.sombraproject.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.jmedeisis.bugstick.Joystick;
 import com.jmedeisis.bugstick.JoystickListener;
@@ -36,15 +37,16 @@ public class ControlActivity extends Activity {
             @Override
             public void onDrag(float degrees, float offset){
                 offset *= 100.0;
-                byte x = (byte) (Math.cos(Math.toRadians(degrees)) * offset);
-                byte y = (byte) (Math.sin(Math.toRadians(degrees)) * offset);
+                int x = (int) (Math.cos(Math.toRadians(degrees)) * offset);
+                int y = (int) (Math.sin(Math.toRadians(degrees)) * offset);
+                Log.i("IEM : ", " ------> S0MBR4 : " + x + " " + y );
+
                 Connection.getInstance().addToSendQueue(x, y);
-                //Connection.getInstance().sendData(x, y);
             }
 
             @Override
             public void onUp(){
-                Connection.getInstance().addToSendQueue((byte) 0, (byte) 0);
+                Connection.getInstance().addToSendQueue(0, 0);
             }
         };
     }
